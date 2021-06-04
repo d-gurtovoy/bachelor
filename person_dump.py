@@ -16,10 +16,13 @@ t1 = time.time()
 for ii, entity_dict in enumerate(wjd):
 
     if entity_dict["type"] == "item":
-        entity = WikidataItem(entity_dict)
-        if is_human(entity):
-            x = filtered_entities(entity_dict)
-            results.append(x)
+        try:
+            entity = WikidataItem(entity_dict)
+            if is_human(entity):
+                x = filtered_entities(entity_dict)
+                results.append(x)
+        except:
+            continue
     if ii % 1000 == 0:
         t2 = time.time()
         dt = t2 - t1
