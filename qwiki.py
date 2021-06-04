@@ -24,12 +24,13 @@ test_entity = WikidataItem(test_dict)
 #entity = WikidataItem(get_entity_dict_from_api(qid))
 
 def is_human(entity):
-    claim_group = entity.get_truthy_claim_group('P31')
-    claim = claim_group[0]
-    qid = claim.mainsnak.datavalue.value['id']
-    if qid == 'Q5':
-        return True
-    else:
+    try:
+        claim_group = entity.get_truthy_claim_group('P31')
+        claim = claim_group[0]
+        qid = claim.mainsnak.datavalue.value['id']
+        if qid == 'Q5':
+            return True
+    except:
         return False
 
 
