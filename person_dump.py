@@ -20,7 +20,8 @@ for ii, entity_dict in enumerate(wjd):
             entity = WikidataItem(entity_dict)
             if is_human(entity):
                 x = filtered_entities(entity_dict)
-                results.append(x)
+                res = type_to_entity_class[x](entity_dict)
+                results.append(res)
         except:
             continue
     if ii % 1000 == 0:
