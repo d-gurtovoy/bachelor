@@ -7,29 +7,35 @@ f = json.load(open('filtered_subprops.json','r'))
 
 # This is fine for small queries, for bigger queries use JSONDump
 #create an instance of an entity item
-entity_dict = get_entity_dict_from_api('Q76')
-entity = WikidataItem(entity_dict)
+test_dict = get_entity_dict_from_api('Q42')
+test_entity = WikidataItem(test_dict)
 
 # get claim 'educated at'
 # use 'truthy' claims to get the statements that have the best rank for a given property (preferred)
-#claim_groups = entity.get_truthy_claim_groups()
-#p69_claim_group = claim_groups['P551']
+#claim_groups = test_entity.get_truthy_claim_groups()
+#p69_claim_group = claim_groups['P69']
 
-#p69_claim_group = entity.get_truthy_claim_group('P69')
+
+#p69_claim_group = test_entity.get_truthy_claim_group('P69')
 
 # Extract id from claim and turn into a WikidataItem
 #claim = p69_claim_group[0]
 #qid = claim.mainsnak.datavalue.value['id']
 #entity = WikidataItem(get_entity_dict_from_api(qid))
 
+def is_human(entity):
+    claim_group = entity.get_truthy_claim_group('P31')
+    claim = claim_group[0]
+    qid = claim.mainsnak.datavalue.value['id']
+    if qid == 'Q5':
+        return True
+    else:
+        return False
+
+
 def filtered_entities(entity_dict):
-    if entity_dict['sitelinks']['dewiki']:
+    if 'dewiki' in entity_dict['sitelinks']:
         item = {
-            'pageid' : entity_dict['pageid'],
-            'ns' : entity_dict['ns'],
-            'title' : entity_dict['title'],
-            'lastrevid' : entity_dict['lastrevid'],
-            'modified' : entity_dict['modified'],
             'type': entity_dict['type'],
             'id' : entity_dict['id'],
             'labels' : {
