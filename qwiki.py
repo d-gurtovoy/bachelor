@@ -5,99 +5,105 @@ import json
 
 f = json.load(open('filtered_subprops.json','r'))
 
-# This is fine for small queries, for bigger queries use JSONDump
-#create an instance of an entity item
-test_dict = get_entity_dict_from_api('Q42')
-test_entity = WikidataItem(test_dict)
+lang = ['de', 'en', 'fr', 'ru']
 
-# get claim 'educated at'
-# use 'truthy' claims to get the statements that have the best rank for a given property (preferred)
-#claim_groups = test_entity.get_truthy_claim_groups()
-#p69_claim_group = claim_groups['P69']
+person_claims = [
+'P735',  #given name
+'P734',  #family name
+'P106',  #occupation
+'P742'  #pseudonym
+]
 
+street_claims = [
+'P131',  #located in administrative territorial entity
+'P625',  #coordinates
+'P402',  #OSM-ID
+'P138'  #named after
+]
 
-#p69_claim_group = test_entity.get_truthy_claim_group('P69')
-
-# Extract id from claim and turn into a WikidataItem
-#claim = p69_claim_group[0]
-#qid = claim.mainsnak.datavalue.value['id']
-#entity = WikidataItem(get_entity_dict_from_api(qid))
-
-def is_human(entity):
+def is_person_or_street(entity):
     try:
         claim_group = entity.get_truthy_claim_group('P31')
         claim = claim_group[0]
         qid = claim.mainsnak.datavalue.value['id']
         if qid == 'Q5':
-            return True
+            return 'person'
+        if qid == 'Q79007':
+            return 'street'
     except:
         return False
 
 
-def filtered_entities(entity_dict):
-    if 'dewiki' in entity_dict['sitelinks']:
-        item = {
-            'type': entity_dict['type'],
-            'id' : entity_dict['id'],
-            'labels' : {
-                'de' : entity_dict['labels']['de']
-                },
-            'descriptions' : {
+def filtered_properties(entity_dict, is_type):
+    item = {
+        'type': entity_dict['type'],
+        'id' : entity_dict['id'],
+        'labels' : {
             },
-            'aliases' : {
-            },
-            'claims':{
-            },
-            'sitelinks' : {
-                'dewiki' : entity_dict['sitelinks']['dewiki'],
-            }
+        'descriptions' : {
+        },
+        'aliases' : {
+        },
+        'claims':{
+        },
+        'sitelinks' : {
         }
+    }
+    for i in lang:
         try:
-            item['aliases']['de'] = entity_dict['aliases']['de']
-            item['descriptions']['de'] =  entity_dict['descriptions']['de']
+            item['labels'][i] = entity_dict['labels'][i]
         except:
             pass
 
-    if 'enwiki' in entity_dict['sitelinks']:
         try:
-            item['labels']['en'] = entity_dict['labels']['en']
-            item['descriptions']['en'] = entity_dict['descriptions']['en']
-            item['aliases']['en'] = entity_dict['aliases']['en']
-            item['sitelinks']['enwiki'] = entity_dict['sitelinks']['enwiki']
+            item['descriptions'][i] = entity_dict['descriptions'][i]
         except:
             pass
 
-    if 'frwiki' in entity_dict['sitelinks']:
         try:
-            item['labels']['fr'] = entity_dict['labels']['fr']
-            item['descriptions']['fr'] = entity_dict['descriptions']['fr']
-            item['aliases']['ru'] = entity_dict['aliases']['ru']
-            item['sitelinks']['ruwiki'] = entity_dict['sitelinks']['ruwiki']
+            item['aliases'][i] = entity_dict['aliases'][i]
         except:
             pass
 
-    if 'ruwiki' in entity_dict['sitelinks']:
         try:
-            item['labels']['ru'] = entity_dict['labels']['ru']
-            item['descriptions']['ru'] = entity_dict['descriptions']['ru']
-            item['aliases']['ru'] = entity_dict['aliases']['ru']
-            item['sitelinks']['ruwiki'] = entity_dict['sitelinks']['ruwiki']
+            item['sitelinks'][i] = entity_dict['sitelinks'][i+'wiki'],
         except:
             pass
 
-    # general claims
-    try:
-        item['claims']['P106'] = entity_dict['claims']['P106']  #occupation
-        item['claims']['P735'] = entity_dict['claims']['P735']  #given name
-        item['claims']['P734'] = entity_dict['claims']['P734']  #family name
-        item['claims']['P742'] = entity_dict['claims']['P742']  #pseudonym
-    except:
-        pass
+    if is_type == 'person':
+        #general claims
+        for i in person_claims:
+            try:
+                item['claims'][i] = entity_dict['claims'][i]
+            except:
+                pass
 
-    # location claims
-    for i in f:
+    if is_type == 'street':
+        for k in street_claims:
+            try:
+                item['claims'][k] = entity_dict['claims'][k]
+            except:
+                pass
+
+    #location related claims
+    for j in f:
         try:
-            item['claims'][i] = entity_dict['claims'][i]
+            item['claims'][j] = entity_dict['claims'][j]
         except:
             pass
+
     return item
+
+#test_ent = get_entity_dict_from_api('Q570116')  #Alexanderplatz
+test_ent = get_entity_dict_from_api('Q98400')     #Douglas Adams
+#test_ent = get_entity_dict_from_api('Q15649764')#Mozartstraße
+test_dict = WikidataItem(test_ent)
+
+
+
+x = is_person_or_street(test_dict)
+if x:
+    test = filtered_properties(test_ent,x)
+    print(test['claims'].keys())
+else:
+    print('no')
