@@ -21,7 +21,7 @@ for ii, entity_dict in enumerate(wjd):
         try:
             entity = WikidataItem(entity_dict)
             if is_person_or_street(entity) == ENTITY_TYPE:
-                x = filter_persons(entity_dict, ENTITY_TYPE)
+                x = filtered_properties(entity_dict, ENTITY_TYPE)
                 results.append(res)
         except:
             continue
