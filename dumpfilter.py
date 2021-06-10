@@ -37,10 +37,13 @@ for ii, entity_dict in enumerate(wjd):
         break
 
 # write the iterable of WikidataItem to disk as JSON
-out_fname = "filtered_entities.json"
-dump_entities_to_json(results, out_fname)
-wjd_filtered = WikidataJsonDump(out_fname)
+#out_fname = "filtered_entities.json"
+#dump_entities_to_json(results, out_fname)
+#wjd_filtered = WikidataJsonDump(out_fname)
 
 # load filtered entities and create instances of WikidataItem
-for ii, entity_dict in enumerate(wjd_filtered):
-    item = WikidataItem(entity_dict)
+#for ii, entity_dict in enumerate(wjd_filtered):
+#    item = WikidataItem(entity_dict)
+
+with open('filtered_entities.json','w') as f:
+    f = json.dump(results,f)
