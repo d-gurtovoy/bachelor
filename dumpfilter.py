@@ -21,7 +21,7 @@ for ii, entity_dict in enumerate(wjd):
         try:
             entity = WikidataItem(entity_dict)
             if is_person_or_street(entity) == ENTITY_TYPE:
-                x = filtered_properties(entity_dict, ENTITY_TYPE)
+                res = filtered_properties(entity_dict, ENTITY_TYPE)
                 results.append(res)
         except:
             continue
@@ -33,7 +33,7 @@ for ii, entity_dict in enumerate(wjd):
                 len(results), ii, ii / dt
             )
         )
-    if ii > 10:
+    if ii > 10000:
         break
 
 # write the iterable of WikidataItem to disk as JSON
@@ -45,5 +45,9 @@ for ii, entity_dict in enumerate(wjd):
 #for ii, entity_dict in enumerate(wjd_filtered):
 #    item = WikidataItem(entity_dict)
 
-with open('filtered_entities.json','w') as f:
-    f = json.dump(results,f)
+if ENTITY_TYPE == 'person':
+    with open('filtered_persons.json','w') as f:
+        f = json.dump(results,f)
+if ENTITY_TYPE == 'street':
+    with open('filtered_streets.json','w') as f:
+        f = json.dump(results,f)
