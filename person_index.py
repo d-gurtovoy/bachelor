@@ -6,6 +6,7 @@ personWiki = json.load(open('filtered_persons.json','r'))
 
 lang = ['de','en','fr','ru']
 
+
 for i in personWiki:
     for j in lang:
         try:
@@ -14,7 +15,11 @@ for i in personWiki:
         except:
             pass
         try:
-            personIndexDB.append(key,', '+value)
+            ids = personIndexDB.get(key)
+            if value in ids:
+                pass
+            else:
+                personIndexDB.append(key,', '+value)
         except:
             personIndexDB.set(key,value)
 
