@@ -13,7 +13,7 @@ for i in personWiki:
         try:
             for x in i['aliases'][j]:
                 key=x['value']
-                value = [[i['id'], ['label_'+j]]]
+                value = [[i['id'], ['alias_'+j]]]
 
                 try:
                     test = personIndexDB.get(key)
@@ -21,7 +21,7 @@ for i in personWiki:
                     for k in test:
                         qids.append(k[0])
                         if k[0] == i['id']:
-                            k[1].append('label_'+j)
+                            k[1].append('alias_'+j)
                     if i['id'] not in qids:
                         personIndexDB.append(key,value)
                 except:
