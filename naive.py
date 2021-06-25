@@ -22,7 +22,7 @@ for i in gt['results']['bindings']:
 
     for s in suffix:
         if s in item['street_label']:
-            query = item['street_label'].replace(s,'')
+            query = item['street_label'].replace(s,'').rstrip()
             break
         else:
             query = item['street_label']
